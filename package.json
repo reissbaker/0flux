@@ -14,5 +14,5 @@
   },
   "author": "Matt Baker",
   "license": "ISC",
-  "typings": "build/lib/index.d.ts"
+  "typings": "build/index.d.ts"
 }
