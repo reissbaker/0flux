@@ -1,0 +1,14 @@
+{
+  "name": "0flux",
+  "version": "0.0.1",
+  "description": "Typed state management",
+  "main": "build/index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Matt Baker",
+  "license": "ISC"
+}

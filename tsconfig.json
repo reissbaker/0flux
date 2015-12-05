@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "noImplicitAny": true,
+    "target": "es5",
+    "outDir": "build/"
+  },
+  "files": [
+    "test/example.ts"
+  ]
+}
