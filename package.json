@@ -14,7 +14,5 @@
   },
   "author": "Matt Baker",
   "license": "ISC",
-  "typescript": {
-    "definition": "build/lib/gamekernel.d.ts"
-  }
+  "typings": "build/lib/index.d.ts"
 }
