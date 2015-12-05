@@ -1,12 +1,14 @@
 'use strict';
 var LeafNode = (function () {
     function LeafNode(definition) {
+        var _this = this;
         this._callbacks = [];
         this._definition = definition;
         if (definition.deepEquals == null)
             this._deepEquals = definition.deepEquals;
         else
             this._deepEquals = true;
+        this._state = this._definition.bind(function () { return _this.current; }, function (s) { _this._setState(s); });
     }
     Object.defineProperty(LeafNode.prototype, "current", {
         get: function () {
@@ -49,12 +51,6 @@ var LeafNode = (function () {
         if (this._deepEquals && deepEquals(prevState, state))
             return;
         this._notify();
-    };
-    LeafNode.prototype._bind = function (dispatcher) {
-        var _this = this;
-        this._state = this._definition.bind(dispatcher, function (s) {
-            _this._setState(s);
-        });
     };
     LeafNode.prototype._notify = function () {
         for (var i = 0; i < this._callbacks.length; i++) {

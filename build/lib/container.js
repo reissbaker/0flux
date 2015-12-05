@@ -11,15 +11,6 @@ var Container = (function () {
         this._maxHistory = opts.hasOwnProperty("maxHistory") ? opts.maxHistory : 0;
         this._deepEqualsDefault = opts.hasOwnProperty("deepEquals") ? opts.deepEquals : true;
     }
-    Container.prototype.dispatcher = function (impl) {
-        if (this._dispatcher)
-            throw new Error('Already initialized dispatcher.');
-        this._dispatcher = impl;
-        this._nodes.forEach(function (node) {
-            node._bind(impl);
-        });
-        return impl;
-    };
     Container.prototype.action = function () {
         return new ActionDispatcher(this);
     };
@@ -54,9 +45,6 @@ var Container = (function () {
             deepEquals: this._deepEqualsDefault
         });
         this._nodes.push(node);
-        // FIXME: can we rearchitect to avoid the type cast here?
-        if (this._dispatcher)
-            node._bind(this._dispatcher);
         return node;
     };
     return Container;

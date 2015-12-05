@@ -1,43 +1,47 @@
 'use strict';
 
 import ActionDispatcher = require('./action-dispatcher');
-import DispatcherIndex = require('./dispatcher-index');
 import StateTransition = require('./state-transition');
 import Callback = require('./callback');
 
-export interface bindFn<State, DispatcherImpl extends DispatcherIndex> {
-  (dispatcher: DispatcherImpl, setState: (s: State) => any): State;
+export interface bindFn<State> {
+  (getState: () => State, setState: (s: State) => any): State;
 }
 
-export interface StateDefinition<State, DispatcherImpl extends DispatcherIndex> {
+export interface StateDefinition<State> {
   deepEquals?: boolean;
-  bind: bindFn<State, DispatcherImpl>;
+  bind: bindFn<State>;
 }
 
 
-export class LeafNode<State, DispatcherImpl extends DispatcherIndex> {
-  private _definition: StateDefinition<State, DispatcherImpl>;
+export class LeafNode<State> {
+  private _definition: StateDefinition<State>;
   private _deepEquals: boolean;
   private _state: State;
   private _callbacks: Callback<State>[] = [];
 
-  constructor(definition: StateDefinition<State, DispatcherImpl>) {
+  constructor(definition: StateDefinition<State>) {
     this._definition = definition;
 
     if(definition.deepEquals == null) this._deepEquals = definition.deepEquals;
     else this._deepEquals = true;
+
+    this._state = this._definition.bind(
+      () => { return this.current; },
+      (s: State) => { this._setState(s); }
+    );
   }
 
   get current(): State {
     return this._state;
   }
 
-  watch(callback: Callback<State>): LeafNode<State, DispatcherImpl> {
+  watch(callback: Callback<State>): LeafNode<State> {
     this._callbacks.push(callback);
     return this;
   }
 
-  watchNext(callback: Callback<State>): LeafNode<State, DispatcherImpl> {
+  watchNext(callback: Callback<State>): LeafNode<State> {
     const wrapped = (s: State) => {
       this.unwatch(wrapped);
       callback(s);
@@ -46,7 +50,7 @@ export class LeafNode<State, DispatcherImpl extends DispatcherIndex> {
     return this;
   }
 
-  unwatch(callback: Callback<State>): LeafNode<State, DispatcherImpl> {
+  unwatch(callback: Callback<State>): LeafNode<State> {
     for(let i = 0; i < this._callbacks.length; i++) {
       if(this._callbacks[i] === callback) {
         this._callbacks.splice(i, 1);
@@ -57,12 +61,12 @@ export class LeafNode<State, DispatcherImpl extends DispatcherIndex> {
     return this;
   }
 
-  removeAllWatchers(): LeafNode<State, DispatcherImpl> {
+  removeAllWatchers(): LeafNode<State> {
     this._callbacks = [];
     return this;
   }
 
-  _setState(state: State): void {
+  private _setState(state: State): void {
     const prevState = this._state;
     this._state = state;
 
@@ -70,12 +74,6 @@ export class LeafNode<State, DispatcherImpl extends DispatcherIndex> {
     if(this._deepEquals && deepEquals(prevState, state)) return;
 
     this._notify();
-  }
-
-  _bind<Data>(dispatcher: DispatcherImpl): void {
-    this._state = this._definition.bind(dispatcher, (s: State) => {
-      this._setState(s);
-    });
   }
 
   private _notify() {

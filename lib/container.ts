@@ -11,16 +11,15 @@ export interface ContainerOptions {
 }
 
 export interface HistoryEntry<State> {
-  node: LeafNode<State, any>;
+  node: LeafNode<State>;
   state: State;
 }
 
 export class Container {
-  private _nodes: LeafNode<any, any>[] = [];
+  private _nodes: LeafNode<any>[] = [];
   private _history: HistoryEntry<any>[][] = [];
   private _historyIndex = -1;
   private _maxHistory: number;
-  private _dispatcher: DispatcherIndex;
   private _deepEqualsDefault: boolean;
 
   constructor(opts: ContainerOptions = {}) {
@@ -28,30 +27,19 @@ export class Container {
     this._deepEqualsDefault = opts.hasOwnProperty("deepEquals") ? opts.deepEquals : true;
   }
 
-  dispatcher<DispatcherImpl extends DispatcherIndex>(impl: DispatcherImpl): DispatcherImpl {
-    if(this._dispatcher) throw new Error('Already initialized dispatcher.');
-
-    this._dispatcher = impl;
-    this._nodes.forEach((node) => {
-      node._bind(impl);
-    });
-
-    return impl;
-  }
-
   action<Data>(): ActionDispatcher<Data> {
     return new ActionDispatcher<Data>(this);
   }
 
-  state<State, DispatcherImpl extends DispatcherIndex>(bind: leafNode.bindFn<State, DispatcherImpl>) {
-    return this._nodeBuilder<State, DispatcherImpl>(bind, this._deepEqualsDefault);
+  state<State>(bind: leafNode.bindFn<State>) {
+    return this._nodeBuilder<State>(bind, this._deepEqualsDefault);
   }
 
-  deepState<State, DispatcherImpl extends DispatcherIndex>(bind: leafNode.bindFn<State, DispatcherImpl>) {
+  deepState<State>(bind: leafNode.bindFn<State>) {
     return this._nodeBuilder(bind, true);
   }
 
-  shallowState<State, DispatcherImpl extends DispatcherIndex, Data>(bind: leafNode.bindFn<State, DispatcherImpl>) {
+  shallowState<State>(bind: leafNode.bindFn<State>) {
     return this._nodeBuilder(bind, false);
   }
 
@@ -75,18 +63,13 @@ export class Container {
     }
   }
 
-  private _nodeBuilder<State, DispatcherImpl extends DispatcherIndex>(
-    bind: leafNode.bindFn<State, DispatcherImpl>,
-    deepEquals: boolean
-  ) {
+  private _nodeBuilder<State>(bind: leafNode.bindFn<State>, deepEquals: boolean) {
     const node = new LeafNode({
       bind,
       deepEquals: this._deepEqualsDefault
     });
-    this._nodes.push(node);
 
-    // FIXME: can we rearchitect to avoid the type cast here?
-    if(this._dispatcher) node._bind(this._dispatcher as DispatcherImpl);
+    this._nodes.push(node);
 
     return node;
   }
