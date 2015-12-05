@@ -16,5 +16,5 @@
   "license": "ISC",
   "typescript": {
     "definition": "build/lib/gamekernel.d.ts"
-  },
+  }
 }
