@@ -1,21 +1,37 @@
 'use strict';
-var Statux = require('../index');
-var container = new Statux();
-var dispatcher = container.dispatcher({
+var Flux = require('../index');
+var container = new Flux();
+var dispatcher = {
     addTodo: container.action(),
     removeTodo: container.action(),
-});
-var todoState = container.state(function (dispatcher, setState) {
+};
+var todoState = container.state(function (getState, setState) {
     dispatcher.addTodo.bind(function (todoAction) {
-        console.log('add todo', todoAction.name);
-        setState({});
+        setState({
+            todos: getState().todos.concat([todoAction])
+        });
     });
     dispatcher.removeTodo.bind(function (todoAction) {
-        console.log('remove todo', todoAction.name);
-        setState({});
+        setState({
+            todos: getState().todos.filter(function (item) {
+                return item.id !== todoAction.id;
+            })
+        });
     });
-    return {};
+    return {
+        todos: []
+    };
 });
-dispatcher.addTodo.dispatch({
+var julia = dispatcher.addTodo.dispatch({
+    id: 0,
     name: 'julia'
 });
+var clone = dispatcher.addTodo.dispatch({
+    id: 1,
+    name: 'evil julia clone'
+});
+console.log('evil clone detected:');
+console.log(todoState.current);
+dispatcher.removeTodo.dispatch(clone);
+console.log('evil clone eliminated:');
+console.log(todoState.current);

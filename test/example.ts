@@ -1,37 +1,57 @@
 'use strict';
 
-import Statux = require('../index');
+import Flux = require('../index');
 
 interface TodoAction {
   name: string;
+  id: number;
 }
 
-const container = new Statux();
+const container = new Flux();
 
-const dispatcher = container.dispatcher({
+const dispatcher = {
   addTodo: container.action<TodoAction>(),
   removeTodo: container.action<TodoAction>(),
-});
-
-type Dispatcher = typeof dispatcher;
+};
 
 interface State {
+  todos: TodoAction[];
 }
 
-const todoState = container.state<State, Dispatcher>((dispatcher, setState) => {
+const todoState = container.state<State>((getState, setState) => {
   dispatcher.addTodo.bind((todoAction) => {
-    console.log('add todo', todoAction.name);
-    setState({});
+    setState({
+      todos: getState().todos.concat([ todoAction ])
+    });
   });
 
   dispatcher.removeTodo.bind((todoAction) => {
-    console.log('remove todo', todoAction.name);
-    setState({});
+    setState({
+      todos: getState().todos.filter((item) => {
+        return item.id !== todoAction.id;
+      })
+    });
   });
 
-  return {};
+  return {
+    todos: []
+  };
 });
 
-dispatcher.addTodo.dispatch({
+const julia = dispatcher.addTodo.dispatch({
+  id: 0,
   name: 'julia'
 });
+
+const clone = dispatcher.addTodo.dispatch({
+  id: 1,
+  name: 'evil julia clone'
+});
+
+console.log('evil clone detected:');
+console.log(todoState.current);
+
+dispatcher.removeTodo.dispatch(clone);
+
+console.log('evil clone eliminated:');
+console.log(todoState.current);
