@@ -5,12 +5,13 @@ import ActionDispatcher = require('./action-dispatcher');
 import leafNode = require('./leaf-node');
 import LeafNode = leafNode.LeafNode;
 
+const DEFAULT_HISTORY_LENGTH = 0;
+
 export interface ContainerOptions {
   maxHistory?: number;
-  deepEquals?: boolean;
 }
 
-export interface HistoryEntry<State> {
+interface HistoryEntry<State> {
   node: LeafNode<State>;
   state: State;
 }
@@ -20,11 +21,9 @@ export class Container {
   private _history: HistoryEntry<any>[][] = [];
   private _historyIndex = -1;
   private _maxHistory: number;
-  private _deepEqualsDefault: boolean;
 
   constructor(opts: ContainerOptions = {}) {
-    this._maxHistory = opts.hasOwnProperty("maxHistory") ? opts.maxHistory : 0;
-    this._deepEqualsDefault = opts.hasOwnProperty("deepEquals") ? opts.deepEquals : true;
+    this._maxHistory = opts.hasOwnProperty("maxHistory") ? opts.maxHistory : DEFAULT_HISTORY_LENGTH;
   }
 
   action<Data>(): ActionDispatcher<Data> {
@@ -32,15 +31,9 @@ export class Container {
   }
 
   state<State>(bind: leafNode.bindFn<State>) {
-    return this._nodeBuilder<State>(bind, this._deepEqualsDefault);
-  }
-
-  deepState<State>(bind: leafNode.bindFn<State>) {
-    return this._nodeBuilder(bind, true);
-  }
-
-  shallowState<State>(bind: leafNode.bindFn<State>) {
-    return this._nodeBuilder(bind, false);
+    const node = new LeafNode(bind);
+    this._nodes.push(node);
+    return node;
   }
 
   snapshot<State>(): void {
@@ -62,17 +55,5 @@ export class Container {
       this._historyIndex--;
     }
   }
-
-  private _nodeBuilder<State>(bind: leafNode.bindFn<State>, deepEquals: boolean) {
-    const node = new LeafNode({
-      bind,
-      deepEquals: this._deepEqualsDefault
-    });
-
-    this._nodes.push(node);
-
-    return node;
-  }
-
 }
 

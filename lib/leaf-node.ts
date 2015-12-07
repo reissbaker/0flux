@@ -8,25 +8,15 @@ export interface bindFn<State> {
   (getState: () => State, setState: (s: State) => any): State;
 }
 
-export interface StateDefinition<State> {
-  deepEquals?: boolean;
-  bind: bindFn<State>;
-}
-
-
 export class LeafNode<State> {
-  private _definition: StateDefinition<State>;
-  private _deepEquals: boolean;
+  private _bind: bindFn<State>;
   private _state: State;
   private _callbacks: Callback<State>[] = [];
 
-  constructor(definition: StateDefinition<State>) {
-    this._definition = definition;
+  constructor(bind: bindFn<State>) {
+    this._bind = bind;
 
-    if(definition.deepEquals == null) this._deepEquals = definition.deepEquals;
-    else this._deepEquals = true;
-
-    this._state = this._definition.bind(
+    this._state = bind(
       () => { return this.current; },
       (s: State) => { this._setState(s); }
     );
@@ -71,7 +61,6 @@ export class LeafNode<State> {
     this._state = state;
 
     if(prevState === state) return;
-    if(this._deepEquals && deepEquals(prevState, state)) return;
 
     this._notify();
   }
@@ -83,45 +72,3 @@ export class LeafNode<State> {
   }
 }
 
-function deepEquals(a: any, b: any): boolean {
-  if(a instanceof Array) {
-    if(!(b instanceof Array)) return false;
-    if(a.length !== b.length) return false;
-
-    for(let i = 0; i < a.length; i++) {
-      if(!deepEquals(a[i], b[i])) return false;
-    }
-
-    return true;
-  }
-
-  if(typeof a === 'object') {
-    let keys = Object.keys(a);
-    if(!deepEquals(keys, Object.keys(b))) return false;
-    for(let i = 0; i < keys.length; i++) {
-      if(!deepEquals(a[keys[i]], b[keys[i]])) return false;
-    }
-    return true;
-  }
-
-  if(typeof a === 'number') {
-    if(a === b) return true;
-    return false;
-  }
-
-  if(typeof a === 'string') {
-    if(a === b) return true;
-    return false;
-  }
-
-  if(typeof a === 'function') {
-    if(typeof console.warn === 'function') {
-      console.warn(`Statux warning: if you use functions inside states, deep equals won't work and watchers may be notified of every action, regardless of whether it results in state changes or not.`);
-    }
-
-    if(a === b) return true;
-    return false;
-  }
-
-  throw new Error('wtf');
-}
