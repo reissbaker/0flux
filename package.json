@@ -1,5 +1,5 @@
 {
-  "name": "0flux",
+  "name": "zeroflux",
   "version": "0.0.5",
   "description": "Typed state management",
   "main": "build/index.js",
