@@ -1,7 +1,6 @@
 'use strict';
 
 import ActionDispatcher = require('./action-dispatcher');
-import StateTransition = require('./state-transition');
 import Callback = require('./callback');
 
 export interface bindFn<State> {

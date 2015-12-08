@@ -1,11 +1,11 @@
 'use strict';
-var Flux = require('../index');
-var container = new Flux();
+var flux = require('../index');
+var app = new flux.App();
 var dispatcher = {
-    addTodo: container.action(),
-    removeTodo: container.action(),
+    addTodo: app.action(),
+    removeTodo: app.action(),
 };
-var todoStore = container.store(function (getState, setState) {
+var todoStore = app.store(function (getState, setState) {
     dispatcher.addTodo.bind(function (todoAction) {
         setState({
             todos: getState().todos.concat([todoAction])

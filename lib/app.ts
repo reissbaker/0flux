@@ -7,7 +7,7 @@ import Store = st.Store;
 
 const DEFAULT_HISTORY_LENGTH = 0;
 
-export interface ContainerOptions {
+export interface Options {
   maxHistory?: number;
 }
 
@@ -16,13 +16,13 @@ interface HistoryEntry<State> {
   state: State;
 }
 
-export class Container {
+export class App {
   private _stores: Store<any>[] = [];
   private _history: HistoryEntry<any>[][] = [];
   private _historyIndex = -1;
   private _maxHistory: number;
 
-  constructor(opts: ContainerOptions = {}) {
+  constructor(opts: Options = {}) {
     this._maxHistory = opts.hasOwnProperty("maxHistory") ? opts.maxHistory : DEFAULT_HISTORY_LENGTH;
   }
 

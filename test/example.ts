@@ -1,24 +1,24 @@
 'use strict';
 
-import Flux = require('../index');
+import flux = require('../index');
 
 interface TodoAction {
   name: string;
   id: number;
 }
 
-const container = new Flux();
+const app = new flux.App();
 
 const dispatcher = {
-  addTodo: container.action<TodoAction>(),
-  removeTodo: container.action<TodoAction>(),
+  addTodo: app.action<TodoAction>(),
+  removeTodo: app.action<TodoAction>(),
 };
 
 interface State {
   todos: TodoAction[];
 }
 
-const todoStore = container.store<State>((getState, setState) => {
+const todoStore = app.store<State>((getState, setState) => {
   dispatcher.addTodo.bind((todoAction) => {
     setState({
       todos: getState().todos.concat([ todoAction ])

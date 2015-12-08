@@ -1,10 +1,10 @@
-import container = require('./container');
-import Container = container.Container;
+import app = require('./app');
+import App = app.App;
 import Callback = require('./callback');
 declare class ActionDispatcher<Data> {
     private _callbacks;
-    private _container;
-    constructor(container: Container);
+    private _app;
+    constructor(app: App);
     bind(c: Callback<Data>): Callback<Data>;
     dispatch(d: Data): Data;
 }

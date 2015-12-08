@@ -1,15 +1,15 @@
 'use strict';
 
-import container = require('./container');
-import Container = container.Container;
+import app = require('./app');
+import App = app.App;
 import Callback = require('./callback');
 
 class ActionDispatcher<Data> {
   private _callbacks: Callback<Data>[] = [];
-  private _container: Container;
+  private _app: App;
 
-  constructor(container: Container) {
-    this._container = container;
+  constructor(app: App) {
+    this._app = app;
   }
 
   bind(c: Callback<Data>): Callback<Data> {
@@ -18,7 +18,7 @@ class ActionDispatcher<Data> {
   }
 
   dispatch(d: Data): Data {
-    this._container.snapshot();
+    this._app.snapshot();
 
     for(let i = 0; i < this._callbacks.length; i++) {
       this._callbacks[i](d);

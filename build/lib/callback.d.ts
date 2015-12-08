@@ -1,4 +1,4 @@
 interface Callback<Data> {
-    (d: Data): any;
+    (d?: Data): any;
 }
 export = Callback;

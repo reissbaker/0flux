@@ -1,14 +1,14 @@
 import ActionDispatcher = require('./action-dispatcher');
 import st = require('./store');
-export interface ContainerOptions {
+export interface Options {
     maxHistory?: number;
 }
-export declare class Container {
+export declare class App {
     private _stores;
     private _history;
     private _historyIndex;
     private _maxHistory;
-    constructor(opts?: ContainerOptions);
+    constructor(opts?: Options);
     action<Data>(): ActionDispatcher<Data>;
     store<State>(bind: st.bindFn<State>): st.Store<State>;
     snapshot<State>(): void;
