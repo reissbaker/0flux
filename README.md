@@ -1,4 +1,4 @@
-Ø Flux
+Zeroflux
 ================================================================================
 
 A small, typed state management library.
