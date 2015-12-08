@@ -5,7 +5,7 @@ var dispatcher = {
     addTodo: container.action(),
     removeTodo: container.action(),
 };
-var todoState = container.state(function (getState, setState) {
+var todoStore = container.store(function (getState, setState) {
     dispatcher.addTodo.bind(function (todoAction) {
         setState({
             todos: getState().todos.concat([todoAction])
@@ -31,7 +31,7 @@ var clone = dispatcher.addTodo.dispatch({
     name: 'evil julia clone'
 });
 console.log('evil clone detected:');
-console.log(todoState.current);
+console.log(todoStore.current);
 dispatcher.removeTodo.dispatch(clone);
 console.log('evil clone eliminated:');
-console.log(todoState.current);
+console.log(todoStore.current);

@@ -18,7 +18,7 @@ interface State {
   todos: TodoAction[];
 }
 
-const todoState = container.state<State>((getState, setState) => {
+const todoStore = container.store<State>((getState, setState) => {
   dispatcher.addTodo.bind((todoAction) => {
     setState({
       todos: getState().todos.concat([ todoAction ])
@@ -49,9 +49,9 @@ const clone = dispatcher.addTodo.dispatch({
 });
 
 console.log('evil clone detected:');
-console.log(todoState.current);
+console.log(todoStore.current);
 
 dispatcher.removeTodo.dispatch(clone);
 
 console.log('evil clone eliminated:');
-console.log(todoState.current);
+console.log(todoStore.current);

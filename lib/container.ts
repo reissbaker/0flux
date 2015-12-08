@@ -2,8 +2,8 @@
 
 import DispatcherIndex = require('./dispatcher-index');
 import ActionDispatcher = require('./action-dispatcher');
-import leafNode = require('./leaf-node');
-import LeafNode = leafNode.LeafNode;
+import st = require('./store');
+import Store = st.Store;
 
 const DEFAULT_HISTORY_LENGTH = 0;
 
@@ -12,12 +12,12 @@ export interface ContainerOptions {
 }
 
 interface HistoryEntry<State> {
-  node: LeafNode<State>;
+  store: Store<State>;
   state: State;
 }
 
 export class Container {
-  private _nodes: LeafNode<any>[] = [];
+  private _stores: Store<any>[] = [];
   private _history: HistoryEntry<any>[][] = [];
   private _historyIndex = -1;
   private _maxHistory: number;
@@ -30,19 +30,19 @@ export class Container {
     return new ActionDispatcher<Data>(this);
   }
 
-  state<State>(bind: leafNode.bindFn<State>) {
-    const node = new LeafNode(bind);
-    this._nodes.push(node);
-    return node;
+  store<State>(bind: st.bindFn<State>) {
+    const store = new Store(bind);
+    this._stores.push(store);
+    return store;
   }
 
   snapshot<State>(): void {
     if(this._maxHistory <= 0) return;
 
-    const snapshot: HistoryEntry<any>[] = this._nodes.map((node) => {
+    const snapshot: HistoryEntry<any>[] = this._stores.map((store) => {
       return {
-        node,
-        state: node.current
+        store,
+        state: store.current
       };
     });
 

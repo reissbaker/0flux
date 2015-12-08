@@ -1,15 +1,15 @@
 import ActionDispatcher = require('./action-dispatcher');
-import leafNode = require('./leaf-node');
+import st = require('./store');
 export interface ContainerOptions {
     maxHistory?: number;
 }
 export declare class Container {
-    private _nodes;
+    private _stores;
     private _history;
     private _historyIndex;
     private _maxHistory;
     constructor(opts?: ContainerOptions);
     action<Data>(): ActionDispatcher<Data>;
-    state<State>(bind: leafNode.bindFn<State>): leafNode.LeafNode<State>;
+    store<State>(bind: st.bindFn<State>): st.Store<State>;
     snapshot<State>(): void;
 }

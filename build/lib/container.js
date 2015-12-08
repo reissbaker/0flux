@@ -1,12 +1,12 @@
 'use strict';
 var ActionDispatcher = require('./action-dispatcher');
-var leafNode = require('./leaf-node');
-var LeafNode = leafNode.LeafNode;
+var st = require('./store');
+var Store = st.Store;
 var DEFAULT_HISTORY_LENGTH = 0;
 var Container = (function () {
     function Container(opts) {
         if (opts === void 0) { opts = {}; }
-        this._nodes = [];
+        this._stores = [];
         this._history = [];
         this._historyIndex = -1;
         this._maxHistory = opts.hasOwnProperty("maxHistory") ? opts.maxHistory : DEFAULT_HISTORY_LENGTH;
@@ -14,18 +14,18 @@ var Container = (function () {
     Container.prototype.action = function () {
         return new ActionDispatcher(this);
     };
-    Container.prototype.state = function (bind) {
-        var node = new LeafNode(bind);
-        this._nodes.push(node);
-        return node;
+    Container.prototype.store = function (bind) {
+        var store = new Store(bind);
+        this._stores.push(store);
+        return store;
     };
     Container.prototype.snapshot = function () {
         if (this._maxHistory <= 0)
             return;
-        var snapshot = this._nodes.map(function (node) {
+        var snapshot = this._stores.map(function (store) {
             return {
-                node: node,
-                state: node.current
+                store: store,
+                state: store.current
             };
         });
         this._history.push(snapshot);

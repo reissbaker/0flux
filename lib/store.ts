@@ -8,7 +8,7 @@ export interface bindFn<State> {
   (getState: () => State, setState: (s: State) => any): State;
 }
 
-export class LeafNode<State> {
+export class Store<State> {
   private _bind: bindFn<State>;
   private _state: State;
   private _callbacks: Callback<State>[] = [];
@@ -26,12 +26,12 @@ export class LeafNode<State> {
     return this._state;
   }
 
-  watch(callback: Callback<State>): LeafNode<State> {
+  watch(callback: Callback<State>): Store<State> {
     this._callbacks.push(callback);
     return this;
   }
 
-  watchNext(callback: Callback<State>): LeafNode<State> {
+  watchNext(callback: Callback<State>): Store<State> {
     const wrapped = (s: State) => {
       this.unwatch(wrapped);
       callback(s);
@@ -40,7 +40,7 @@ export class LeafNode<State> {
     return this;
   }
 
-  unwatch(callback: Callback<State>): LeafNode<State> {
+  unwatch(callback: Callback<State>): Store<State> {
     for(let i = 0; i < this._callbacks.length; i++) {
       if(this._callbacks[i] === callback) {
         this._callbacks.splice(i, 1);
@@ -51,7 +51,7 @@ export class LeafNode<State> {
     return this;
   }
 
-  removeAllWatchers(): LeafNode<State> {
+  removeAllWatchers(): Store<State> {
     this._callbacks = [];
     return this;
   }
