@@ -4,7 +4,7 @@ import ActionDispatcher = require('./action-dispatcher');
 
 export type GetState<State> = () => State;
 export type SetState<State> = (s: State) => void;
-export type Reducer<State, Data> = (s: State, d?: Data) => State;
+export type Reducer<State, Data> = (s?: State, d?: Data) => State;
 export type AsyncReducer<State, Data> = (s: State, d: Data, done: (n: State) => void) => void;
 
 export class StoreBuilder<State> {
