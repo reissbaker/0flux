@@ -1,16 +1,16 @@
 'use strict';
 
 import ActionDispatcher = require('./action-dispatcher');
+import StoreUpdate = require('./store-update');
+import maybe = require('./maybe');
+import Maybe = maybe.Maybe;
+import isPresent = maybe.isPresent;
+import accessors = require('./state-accessors');
+import GetState = accessors.GetState;
+import SetState = accessors.SetState;
 
-export type GetState<State> = () => State;
-export type SetState<State> = (s: State) => void;
 export type Reducer<State, Data> = (s?: State, d?: Data) => State;
-export type Maybe<Type> = Type | void;
-export type AsyncReducer<State, Data> = (s: State, d: Data, done: (n: State) => void) => Maybe<State>;
-
-function isPresent<State>(a: Maybe<State>): a is State {
-  return !!a;
-}
+export type AsyncReducer<State, Data> = (d: Data, update: StoreUpdate<State>) => Maybe<State>;
 
 export class StoreBuilder<State> {
   private _getState: GetState<State>;
@@ -39,17 +39,13 @@ export class StoreBuilder<State> {
   reduceAsync<Data>(action: ActionDispatcher<Data>, reducer: AsyncReducer<State, Data>) {
     action.bind((data) => {
       const currentState = this._getState();
-      let called = false;
-      const returned = reducer(currentState, data, (nextState: State) => {
-        if(called) throw new Error('ZeroFlux error: done called multiple times from an async reducer');
-        called = true;
-        this._setState(nextState);
-      });
+      const update = new StoreUpdate(this._getState, this._setState);
+      const returned = reducer(data, update);
 
       // Async reducers can return interim states that take effect prior to done() being called. If
       // done has yet to be called, and there was an interim state returned, set the current state
       // to be the interim state.
-      if(!called && isPresent<State>(returned)) this._setState(returned);
+      if(!update.isDone && isPresent<State>(returned)) this._setState(returned);
     });
   }
 }
