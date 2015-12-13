@@ -10,6 +10,6 @@ export declare class App {
     private _maxHistory;
     constructor(opts?: Options);
     action<Data>(): ActionDispatcher<Data>;
-    store<State>(bind: st.bindFn<State>): st.Store<State>;
+    store<State>(build: st.BuilderFn<State>): st.Store<State>;
     snapshot<State>(): void;
 }

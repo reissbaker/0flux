@@ -5,18 +5,18 @@ var dispatcher = {
     addTodo: app.action(),
     removeTodo: app.action(),
 };
-var todoStore = app.store(function (getState, setState) {
-    dispatcher.addTodo.bind(function (todoAction) {
-        setState({
-            todos: getState().todos.concat([todoAction])
-        });
+var todoStore = app.store(function (builder) {
+    builder.reduce(dispatcher.addTodo, function (state, todoAction) {
+        return {
+            todos: state.todos.concat([todoAction])
+        };
     });
-    dispatcher.removeTodo.bind(function (todoAction) {
-        setState({
-            todos: getState().todos.filter(function (item) {
+    builder.reduce(dispatcher.removeTodo, function (state, todoAction) {
+        return {
+            todos: state.todos.filter(function (item) {
                 return item.id !== todoAction.id;
             })
-        });
+        };
     });
     return {
         todos: []
@@ -30,8 +30,12 @@ var clone = dispatcher.addTodo.dispatch({
     id: 1,
     name: 'evil julia clone'
 });
+todoStore.watch(function (state) {
+    console.log('saw new state:', state);
+});
 console.log('evil clone detected:');
-console.log(todoStore.current);
+console.log('current state:', todoStore.current);
+console.log('eliminating evil clone:');
 dispatcher.removeTodo.dispatch(clone);
 console.log('evil clone eliminated:');
-console.log(todoStore.current);
+console.log('current state:', todoStore.current);

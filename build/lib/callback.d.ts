@@ -1,4 +1,2 @@
-interface Callback<Data> {
-    (d?: Data): any;
-}
+declare type Callback<Data> = (d?: Data) => any;
 export = Callback;

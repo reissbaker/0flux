@@ -1,24 +1,20 @@
 'use strict';
 
-import ActionDispatcher = require('./action-dispatcher');
 import Callback = require('./callback');
+import builder = require('./store-builder');
+import StoreBuilder = builder.StoreBuilder;
 
-export interface bindFn<State> {
-  (getState: () => State, setState: (s: State) => any): State;
-}
+export type BuilderFn<State> = (builder: StoreBuilder<State>) => State;
 
 export class Store<State> {
-  private _bind: bindFn<State>;
   private _state: State;
   private _callbacks: Callback<State>[] = [];
 
-  constructor(bind: bindFn<State>) {
-    this._bind = bind;
-
-    this._state = bind(
+  constructor(build: BuilderFn<State>) {
+    this._state = build(new StoreBuilder(
       () => { return this.current; },
       (s: State) => { this._setState(s); }
-    );
+    ));
   }
 
   get current(): State {

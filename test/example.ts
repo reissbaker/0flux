@@ -18,19 +18,19 @@ interface State {
   todos: TodoAction[];
 }
 
-const todoStore = app.store<State>((getState, setState) => {
-  dispatcher.addTodo.bind((todoAction) => {
-    setState({
-      todos: getState().todos.concat([ todoAction ])
-    });
+const todoStore = app.store<State>((builder) => {
+  builder.reduce(dispatcher.addTodo, (state, todoAction) => {
+    return {
+      todos: state.todos.concat([ todoAction ])
+    };
   });
 
-  dispatcher.removeTodo.bind((todoAction) => {
-    setState({
-      todos: getState().todos.filter((item) => {
+  builder.reduce(dispatcher.removeTodo, (state, todoAction) => {
+    return {
+      todos: state.todos.filter((item) => {
         return item.id !== todoAction.id;
       })
-    });
+    };
   });
 
   return {
@@ -48,10 +48,15 @@ const clone = dispatcher.addTodo.dispatch({
   name: 'evil julia clone'
 });
 
-console.log('evil clone detected:');
-console.log(todoStore.current);
+todoStore.watch((state) => {
+  console.log('saw new state:', state);
+});
 
+console.log('evil clone detected:');
+console.log('current state:', todoStore.current);
+
+console.log('eliminating evil clone:');
 dispatcher.removeTodo.dispatch(clone);
 
 console.log('evil clone eliminated:');
-console.log(todoStore.current);
+console.log('current state:', todoStore.current);

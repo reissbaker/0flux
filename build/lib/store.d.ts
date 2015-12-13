@@ -1,12 +1,11 @@
 import Callback = require('./callback');
-export interface bindFn<State> {
-    (getState: () => State, setState: (s: State) => any): State;
-}
+import builder = require('./store-builder');
+import StoreBuilder = builder.StoreBuilder;
+export declare type BuilderFn<State> = (builder: StoreBuilder<State>) => State;
 export declare class Store<State> {
-    private _bind;
     private _state;
     private _callbacks;
-    constructor(bind: bindFn<State>);
+    constructor(build: BuilderFn<State>);
     current: State;
     watch(callback: Callback<State>): Store<State>;
     watchNext(callback: Callback<State>): Store<State>;

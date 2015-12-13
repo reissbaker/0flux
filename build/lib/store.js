@@ -1,10 +1,11 @@
 'use strict';
+var builder = require('./store-builder');
+var StoreBuilder = builder.StoreBuilder;
 var Store = (function () {
-    function Store(bind) {
+    function Store(build) {
         var _this = this;
         this._callbacks = [];
-        this._bind = bind;
-        this._state = bind(function () { return _this.current; }, function (s) { _this._setState(s); });
+        this._state = build(new StoreBuilder(function () { return _this.current; }, function (s) { _this._setState(s); }));
     }
     Object.defineProperty(Store.prototype, "current", {
         get: function () {

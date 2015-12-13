@@ -14,8 +14,8 @@ var App = (function () {
     App.prototype.action = function () {
         return new ActionDispatcher(this);
     };
-    App.prototype.store = function (bind) {
-        var store = new Store(bind);
+    App.prototype.store = function (build) {
+        var store = new Store(build);
         this._stores.push(store);
         return store;
     };

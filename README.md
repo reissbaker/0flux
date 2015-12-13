@@ -8,37 +8,37 @@ Example:
 ```typescript
 'use strict';
 
-import * as Flux from '0flux';
+import flux = require('zeroflux');
 
 interface TodoAction {
   name: string;
   id: number;
 }
 
-const container = new Flux();
+const app = new flux.App();
 
 const dispatcher = {
-  addTodo: container.action<TodoAction>(),
-  removeTodo: container.action<TodoAction>(),
+  addTodo: app.action<TodoAction>(),
+  removeTodo: app.action<TodoAction>(),
 };
 
 interface State {
   todos: TodoAction[];
 }
 
-const todoState = container.state<State>((getState, setState) => {
-  dispatcher.addTodo.bind((todoAction) => {
-    setState({
-      todos: getState().todos.concat([ todoAction ])
-    });
+const todoStore = app.store<State>((builder) => {
+  builder.reduce(dispatcher.addTodo, (state, todoAction) => {
+    return {
+      todos: state.todos.concat([ todoAction ])
+    };
   });
 
-  dispatcher.removeTodo.bind((todoAction) => {
-    setState({
-      todos: getState().todos.filter((item) => {
+  builder.reduce(dispatcher.removeTodo, (state, todoAction) => {
+    return {
+      todos: state.todos.filter((item) => {
         return item.id !== todoAction.id;
       })
-    });
+    };
   });
 
   return {
@@ -56,11 +56,16 @@ const clone = dispatcher.addTodo.dispatch({
   name: 'evil julia clone'
 });
 
-console.log('evil clone detected:');
-console.log(todoState.current);
+todoStore.watch((state) => {
+  console.log('saw new state:', state);
+});
 
+console.log('evil clone detected:');
+console.log('current state:', todoStore.current);
+
+console.log('eliminating evil clone:');
 dispatcher.removeTodo.dispatch(clone);
 
 console.log('evil clone eliminated:');
-console.log(todoState.current);
+console.log('current state:', todoStore.current);
 ```

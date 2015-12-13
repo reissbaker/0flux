@@ -1,5 +1,5 @@
 import app = require('./lib/app');
 export declare const App: typeof app.App;
-import store = require('./lib/store');
-export declare const Store: typeof store.Store;
+export import store = require('./lib/store');
+export import factory = require('./lib/store-builder');
 export import ActionDispatcher = require('./lib/action-dispatcher');
