@@ -27,9 +27,7 @@ const todoStore = app.store<State>((builder) => {
 
   builder.reduce(dispatcher.removeTodo, (state, todoAction) => {
     return {
-      todos: state.todos.filter((item) => {
-        return item.id !== todoAction.id;
-      })
+      todos: state.todos.filter((item) => item.id !== todoAction.id)
     };
   });
 

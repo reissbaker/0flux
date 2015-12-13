@@ -13,9 +13,7 @@ var todoStore = app.store(function (builder) {
     });
     builder.reduce(dispatcher.removeTodo, function (state, todoAction) {
         return {
-            todos: state.todos.filter(function (item) {
-                return item.id !== todoAction.id;
-            })
+            todos: state.todos.filter(function (item) { return item.id !== todoAction.id; })
         };
     });
     return {
