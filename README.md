@@ -61,11 +61,11 @@ todoStore.watch((state) => {
 });
 
 console.log('evil clone detected:');
-console.log('current state:', todoStore.current);
+console.log('current state:', todoStore.state);
 
 console.log('eliminating evil clone:');
 dispatcher.removeTodo.dispatch(clone);
 
 console.log('evil clone eliminated:');
-console.log('current state:', todoStore.current);
+console.log('current state:', todoStore.state);
 ```
