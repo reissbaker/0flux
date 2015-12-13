@@ -5,9 +5,9 @@ var Store = (function () {
     function Store(build) {
         var _this = this;
         this._callbacks = [];
-        this._state = build(new StoreBuilder(function () { return _this.current; }, function (s) { _this._setState(s); }));
+        this._state = build(new StoreBuilder(function () { return _this.state; }, function (s) { _this._setState(s); }));
     }
-    Object.defineProperty(Store.prototype, "current", {
+    Object.defineProperty(Store.prototype, "state", {
         get: function () {
             return this._state;
         },

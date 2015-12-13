@@ -42,7 +42,7 @@ export class App {
     const snapshot: HistoryEntry<any>[] = this._stores.map((store) => {
       return {
         store,
-        state: store.current
+        state: store.state
       };
     });
 

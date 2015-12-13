@@ -12,12 +12,12 @@ export class Store<State> {
 
   constructor(build: BuilderFn<State>) {
     this._state = build(new StoreBuilder(
-      () => { return this.current; },
+      () => { return this.state; },
       (s: State) => { this._setState(s); }
     ));
   }
 
-  get current(): State {
+  get state(): State {
     return this._state;
   }
 

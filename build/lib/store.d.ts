@@ -6,7 +6,7 @@ export declare class Store<State> {
     private _state;
     private _callbacks;
     constructor(build: BuilderFn<State>);
-    current: State;
+    state: State;
     watch(callback: Callback<State>): Store<State>;
     watchNext(callback: Callback<State>): Store<State>;
     unwatch(callback: Callback<State>): Store<State>;

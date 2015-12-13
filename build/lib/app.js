@@ -25,7 +25,7 @@ var App = (function () {
         var snapshot = this._stores.map(function (store) {
             return {
                 store: store,
-                state: store.current
+                state: store.state
             };
         });
         this._history.push(snapshot);
