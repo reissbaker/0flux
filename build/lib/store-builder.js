@@ -1,4 +1,7 @@
 'use strict';
+function isPresent(a) {
+    return !!a;
+}
 var StoreBuilder = (function () {
     function StoreBuilder(getState, setState) {
         this._getState = getState;
@@ -24,12 +27,17 @@ var StoreBuilder = (function () {
         action.bind(function (data) {
             var currentState = _this._getState();
             var called = false;
-            reducer(currentState, data, function (nextState) {
+            var returned = reducer(currentState, data, function (nextState) {
                 if (called)
                     throw new Error('ZeroFlux error: done called multiple times from an async reducer');
                 called = true;
                 _this._setState(nextState);
             });
+            // Async reducers can return interim states that take effect prior to done() being called. If
+            // done has yet to be called, and there was an interim state returned, set the current state
+            // to be the interim state.
+            if (!called && isPresent(returned))
+                _this._setState(returned);
         });
     };
     return StoreBuilder;
