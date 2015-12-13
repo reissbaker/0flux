@@ -38,7 +38,6 @@ export class StoreBuilder<State> {
 
   reduceAsync<Data>(action: ActionDispatcher<Data>, reducer: AsyncReducer<State, Data>) {
     action.bind((data) => {
-      const currentState = this._getState();
       const update = new StoreUpdate(this._getState, this._setState);
       const returned = reducer(data, update);
 

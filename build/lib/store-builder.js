@@ -25,7 +25,6 @@ var StoreBuilder = (function () {
     StoreBuilder.prototype.reduceAsync = function (action, reducer) {
         var _this = this;
         action.bind(function (data) {
-            var currentState = _this._getState();
             var update = new StoreUpdate(_this._getState, _this._setState);
             var returned = reducer(data, update);
             // Async reducers can return interim states that take effect prior to done() being called. If
