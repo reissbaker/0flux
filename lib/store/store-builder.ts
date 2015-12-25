@@ -1,8 +1,8 @@
 'use strict';
 
-import ActionDispatcher = require('./action-dispatcher');
+import ActionDispatcher = require('../action-dispatcher');
 import StoreUpdate = require('./store-update');
-import maybe = require('./maybe');
+import maybe = require('../util/maybe');
 import Maybe = maybe.Maybe;
 import isPresent = maybe.isPresent;
 import accessors = require('./state-accessors');

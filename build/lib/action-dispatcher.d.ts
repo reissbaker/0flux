@@ -1,6 +1,6 @@
 import app = require('./app');
 import App = app.App;
-import Callback = require('./callback');
+import Callback = require('./util/callback');
 declare class ActionDispatcher<Data> {
     private _callbacks;
     private _app;

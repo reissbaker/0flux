@@ -1,4 +1,4 @@
-import Callback = require('./callback');
+import Callback = require('../util/callback');
 import builder = require('./store-builder');
 import StoreBuilder = builder.StoreBuilder;
 export declare type BuilderFn<State> = (builder: StoreBuilder<State>) => State;

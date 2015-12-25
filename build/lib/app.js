@@ -1,6 +1,6 @@
 'use strict';
 var ActionDispatcher = require('./action-dispatcher');
-var st = require('./store');
+var st = require('./store/store');
 var Store = st.Store;
 var DEFAULT_HISTORY_LENGTH = 0;
 var App = (function () {

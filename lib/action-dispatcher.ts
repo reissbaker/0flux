@@ -2,7 +2,7 @@
 
 import app = require('./app');
 import App = app.App;
-import Callback = require('./callback');
+import Callback = require('./util/callback');
 
 class ActionDispatcher<Data> {
   private _callbacks: Callback<Data>[] = [];

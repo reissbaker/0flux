@@ -1,6 +1,6 @@
 'use strict';
 var StoreUpdate = require('./store-update');
-var maybe = require('./maybe');
+var maybe = require('../util/maybe');
 var isPresent = maybe.isPresent;
 var StoreBuilder = (function () {
     function StoreBuilder(getState, setState) {

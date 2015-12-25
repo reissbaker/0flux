@@ -1,5 +1,5 @@
 import ActionDispatcher = require('./action-dispatcher');
-import st = require('./store');
+import st = require('./store/store');
 export interface Options {
     maxHistory?: number;
 }

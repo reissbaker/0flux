@@ -2,7 +2,7 @@
 
 import DispatcherIndex = require('./dispatcher-index');
 import ActionDispatcher = require('./action-dispatcher');
-import st = require('./store');
+import st = require('./store/store');
 import Store = st.Store;
 
 const DEFAULT_HISTORY_LENGTH = 0;

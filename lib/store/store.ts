@@ -1,6 +1,6 @@
 'use strict';
 
-import Callback = require('./callback');
+import Callback = require('../util/callback');
 import builder = require('./store-builder');
 import StoreBuilder = builder.StoreBuilder;
 
