@@ -1,6 +1,6 @@
 {
   "name": "zeroflux",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Typed state management",
   "main": "build/index.js",
   "repository": [
