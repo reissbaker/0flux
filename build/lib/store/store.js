@@ -45,11 +45,11 @@ var Store = (function () {
         this._state = state;
         if (prevState === state)
             return;
-        this._notify();
+        this._notify(prevState);
     };
-    Store.prototype._notify = function () {
+    Store.prototype._notify = function (prev) {
         for (var i = 0; i < this._callbacks.length; i++) {
-            this._callbacks[i](this._state);
+            this._callbacks[i](this._state, prev);
         }
     };
     return Store;

@@ -1,14 +1,14 @@
 'use strict';
 
-import Callback = require('../util/callback');
 import builder = require('./store-builder');
 import StoreBuilder = builder.StoreBuilder;
 
 export type BuilderFn<State> = (builder: StoreBuilder<State>) => State;
+export type StoreCallback<State> = (curr?: State, prev?: State) => any;
 
 export class Store<State> {
   private _state: State;
-  private _callbacks: Callback<State>[] = [];
+  private _callbacks: StoreCallback<State>[] = [];
 
   constructor(build: BuilderFn<State>) {
     this._state = build(new StoreBuilder(
@@ -21,12 +21,12 @@ export class Store<State> {
     return this._state;
   }
 
-  watch(callback: Callback<State>): Store<State> {
+  watch(callback: StoreCallback<State>): Store<State> {
     this._callbacks.push(callback);
     return this;
   }
 
-  watchNext(callback: Callback<State>): Store<State> {
+  watchNext(callback: StoreCallback<State>): Store<State> {
     const wrapped = (s: State) => {
       this.unwatch(wrapped);
       callback(s);
@@ -35,7 +35,7 @@ export class Store<State> {
     return this;
   }
 
-  unwatch(callback: Callback<State>): Store<State> {
+  unwatch(callback: StoreCallback<State>): Store<State> {
     for(let i = 0; i < this._callbacks.length; i++) {
       if(this._callbacks[i] === callback) {
         this._callbacks.splice(i, 1);
@@ -57,12 +57,12 @@ export class Store<State> {
 
     if(prevState === state) return;
 
-    this._notify();
+    this._notify(prevState);
   }
 
-  private _notify() {
+  private _notify(prev: State) {
     for(let i = 0; i < this._callbacks.length; i++) {
-      this._callbacks[i](this._state);
+      this._callbacks[i](this._state, prev);
     }
   }
 }
