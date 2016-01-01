@@ -30,7 +30,7 @@ export class App {
     return new ActionDispatcher<Data>(this);
   }
 
-  store<State>(build: st.BuilderFn<State>) {
+  store<State>(build: st.BuilderFn<State>): Store<State> {
     const store = new Store(build);
     this._stores.push(store);
     return store;
