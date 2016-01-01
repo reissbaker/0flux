@@ -8,11 +8,12 @@ import isPresent = maybe.isPresent;
 import accessors = require('./state-accessors');
 import GetState = accessors.GetState;
 import SetState = accessors.SetState;
+import CurrentState = accessors.CurrentState;
 import Thenable = require('./thenable');
 
 export type Reducer<State, Data> = (s?: State, d?: Data) => State;
 export type AsyncReducer<State, Data> = (d: Data, update: StoreUpdate<State>) => Maybe<State>;
-export type PromiseReducer<State, Data> = (s?: GetState<State>, d?: Data) => Thenable<State, any>;
+export type PromiseReducer<State, Data> = (d?: Data, current?: CurrentState<State>) => Thenable<State, any>;
 
 export class StoreBuilder<State> {
   private _getState: GetState<State>;
@@ -52,7 +53,7 @@ export class StoreBuilder<State> {
 
   thenReduce<Data>(action: ActionDispatcher<Data>, reducer: PromiseReducer<State, Data>) {
     action.bind((data) => {
-      const nextStatePromise = reducer(this._getState, data);
+      const nextStatePromise = reducer(data, new CurrentState(this._getState));
       nextStatePromise.then((state) => {
         this._setState(state);
       }, (e: any) => {});

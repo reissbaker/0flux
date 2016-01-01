@@ -2,6 +2,8 @@
 var StoreUpdate = require('./store-update');
 var maybe = require('../util/maybe');
 var isPresent = maybe.isPresent;
+var accessors = require('./state-accessors');
+var CurrentState = accessors.CurrentState;
 var StoreBuilder = (function () {
     function StoreBuilder(getState, setState) {
         this._getState = getState;
@@ -37,7 +39,7 @@ var StoreBuilder = (function () {
     StoreBuilder.prototype.thenReduce = function (action, reducer) {
         var _this = this;
         action.bind(function (data) {
-            var nextStatePromise = reducer(_this._getState, data);
+            var nextStatePromise = reducer(data, new CurrentState(_this._getState));
             nextStatePromise.then(function (state) {
                 _this._setState(state);
             }, function (e) { });
