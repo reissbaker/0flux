@@ -8,9 +8,11 @@ import isPresent = maybe.isPresent;
 import accessors = require('./state-accessors');
 import GetState = accessors.GetState;
 import SetState = accessors.SetState;
+import Thenable = require('./thenable');
 
 export type Reducer<State, Data> = (s?: State, d?: Data) => State;
 export type AsyncReducer<State, Data> = (d: Data, update: StoreUpdate<State>) => Maybe<State>;
+export type PromiseReducer<State, Data> = (s?: GetState<State>, d?: Data) => Thenable<State, any>;
 
 export class StoreBuilder<State> {
   private _getState: GetState<State>;
@@ -45,6 +47,15 @@ export class StoreBuilder<State> {
       // done has yet to be called, and there was an interim state returned, set the current state
       // to be the interim state.
       if(!update.isDone && isPresent<State>(returned)) this._setState(returned);
+    });
+  }
+
+  thenReduce<Data>(action: ActionDispatcher<Data>, reducer: PromiseReducer<State, Data>) {
+    action.bind((data) => {
+      const nextStatePromise = reducer(this._getState, data);
+      nextStatePromise.then((state) => {
+        this._setState(state);
+      }, (e: any) => {});
     });
   }
 }

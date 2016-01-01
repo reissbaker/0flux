@@ -34,6 +34,15 @@ var StoreBuilder = (function () {
                 _this._setState(returned);
         });
     };
+    StoreBuilder.prototype.thenReduce = function (action, reducer) {
+        var _this = this;
+        action.bind(function (data) {
+            var nextStatePromise = reducer(_this._getState, data);
+            nextStatePromise.then(function (state) {
+                _this._setState(state);
+            }, function (e) { });
+        });
+    };
     return StoreBuilder;
 })();
 exports.StoreBuilder = StoreBuilder;
