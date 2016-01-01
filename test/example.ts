@@ -9,10 +9,12 @@ interface TodoAction {
 
 const app = new flux.App();
 
-const dispatcher = {
-  addTodo: app.action<TodoAction>(),
-  removeTodo: app.action<TodoAction>(),
-};
+const dispatcher = app.dispatcher((builder) => {
+  return {
+    addTodo: builder.action<TodoAction>(),
+    removeTodo: builder.action<TodoAction>(),
+  };
+});
 
 interface State {
   todos: TodoAction[];

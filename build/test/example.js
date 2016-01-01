@@ -1,10 +1,12 @@
 'use strict';
 var flux = require('../index');
 var app = new flux.App();
-var dispatcher = {
-    addTodo: app.action(),
-    removeTodo: app.action(),
-};
+var dispatcher = app.dispatcher(function (builder) {
+    return {
+        addTodo: builder.action(),
+        removeTodo: builder.action(),
+    };
+});
 var todoStore = app.store(function (builder) {
     builder.reduce(dispatcher.addTodo, function (state, todoAction) {
         return {

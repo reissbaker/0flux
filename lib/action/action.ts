@@ -1,10 +1,10 @@
 'use strict';
 
-import app = require('./app');
+import app = require('../app');
 import App = app.App;
-import Callback = require('./util/callback');
+import Callback = require('../util/callback');
 
-class ActionDispatcher<Data> {
+class Action<Data> {
   private _callbacks: Callback<Data>[] = [];
   private _app: App;
 
@@ -38,4 +38,4 @@ class ActionDispatcher<Data> {
   }
 }
 
-export = ActionDispatcher;
+export = Action;

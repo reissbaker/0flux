@@ -1,6 +1,6 @@
 'use strict';
 
-import ActionDispatcher = require('../action-dispatcher');
+import Action = require('../action/action');
 import StoreUpdate = require('./store-update');
 import maybe = require('../util/maybe');
 import Maybe = maybe.Maybe;
@@ -24,7 +24,7 @@ export class StoreBuilder<State> {
     this._setState = setState;
   }
 
-  reduce<Data>(action: ActionDispatcher<Data>, reducer: Reducer<State, Data>) {
+  reduce<Data>(action: Action<Data>, reducer: Reducer<State, Data>) {
     action.bind((data) => {
       // TODO: have the inner _setState call cause an app snapshot, rather than snapshotting at the
       // actions. This also means you can reuse dispatchers across apps!
@@ -39,7 +39,7 @@ export class StoreBuilder<State> {
     });
   }
 
-  asyncReduce<Data>(action: ActionDispatcher<Data>, reducer: AsyncReducer<State, Data>) {
+  asyncReduce<Data>(action: Action<Data>, reducer: AsyncReducer<State, Data>) {
     action.bind((data) => {
       const update = new StoreUpdate(this._getState, this._setState);
       const returned = reducer(data, update);
@@ -51,7 +51,7 @@ export class StoreBuilder<State> {
     });
   }
 
-  thenReduce<Data>(action: ActionDispatcher<Data>, reducer: PromiseReducer<State, Data>) {
+  thenReduce<Data>(action: Action<Data>, reducer: PromiseReducer<State, Data>) {
     action.bind((data) => {
       const nextStatePromise = reducer(data, new CurrentState(this._getState));
       nextStatePromise.then((state) => {

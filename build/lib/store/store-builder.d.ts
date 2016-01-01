@@ -1,4 +1,4 @@
-import ActionDispatcher = require('../action-dispatcher');
+import Action = require('../action/action');
 import StoreUpdate = require('./store-update');
 import maybe = require('../util/maybe');
 import Maybe = maybe.Maybe;
@@ -14,7 +14,7 @@ export declare class StoreBuilder<State> {
     private _getState;
     private _setState;
     constructor(getState: GetState<State>, setState: SetState<State>);
-    reduce<Data>(action: ActionDispatcher<Data>, reducer: Reducer<State, Data>): void;
-    asyncReduce<Data>(action: ActionDispatcher<Data>, reducer: AsyncReducer<State, Data>): void;
-    thenReduce<Data>(action: ActionDispatcher<Data>, reducer: PromiseReducer<State, Data>): void;
+    reduce<Data>(action: Action<Data>, reducer: Reducer<State, Data>): void;
+    asyncReduce<Data>(action: Action<Data>, reducer: AsyncReducer<State, Data>): void;
+    thenReduce<Data>(action: Action<Data>, reducer: PromiseReducer<State, Data>): void;
 }

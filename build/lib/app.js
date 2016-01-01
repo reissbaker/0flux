@@ -1,5 +1,5 @@
 'use strict';
-var ActionDispatcher = require('./action-dispatcher');
+var ActionBuilder = require('./action/action-builder');
 var st = require('./store/store');
 var Store = st.Store;
 var DEFAULT_HISTORY_LENGTH = 0;
@@ -11,8 +11,8 @@ var App = (function () {
         this._historyIndex = -1;
         this._maxHistory = opts.hasOwnProperty("maxHistory") ? opts.maxHistory : DEFAULT_HISTORY_LENGTH;
     }
-    App.prototype.action = function () {
-        return new ActionDispatcher(this);
+    App.prototype.dispatcher = function (build) {
+        return build(new ActionBuilder(this));
     };
     App.prototype.store = function (build) {
         var store = new Store(build);

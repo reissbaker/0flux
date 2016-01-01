@@ -1,7 +1,8 @@
 'use strict';
 
-import DispatcherIndex = require('./dispatcher-index');
-import ActionDispatcher = require('./action-dispatcher');
+import Dispatcher = require('./action/dispatcher');
+import Action = require('./action/action');
+import ActionBuilder = require('./action/action-builder');
 import st = require('./store/store');
 import Store = st.Store;
 
@@ -16,6 +17,8 @@ interface HistoryEntry<State> {
   state: State;
 }
 
+export type DispatcherBuilder<DispatcherImpl extends Dispatcher> = (a: ActionBuilder) => DispatcherImpl;
+
 export class App {
   private _stores: Store<any>[] = [];
   private _history: HistoryEntry<any>[][] = [];
@@ -26,8 +29,8 @@ export class App {
     this._maxHistory = opts.hasOwnProperty("maxHistory") ? opts.maxHistory : DEFAULT_HISTORY_LENGTH;
   }
 
-  action<Data>(): ActionDispatcher<Data> {
-    return new ActionDispatcher<Data>(this);
+  dispatcher<DispatcherImpl extends Dispatcher>(build: DispatcherBuilder<DispatcherImpl>): DispatcherImpl {
+    return build(new ActionBuilder(this));
   }
 
   store<State>(build: st.BuilderFn<State>): Store<State> {
