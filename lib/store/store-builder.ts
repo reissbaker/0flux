@@ -10,7 +10,7 @@ import GetState = accessors.GetState;
 import SetState = accessors.SetState;
 
 export type Reducer<State, Data> = (s?: State, d?: Data) => State;
-export type AsyncReducer<State, Data> = (d: Data, update: StoreUpdate<State>) => Maybe<State>;
+export type AsyncReducer<State, Data> = (update: StoreUpdate<State>) => Maybe<State>;
 
 export class StoreBuilder<State> {
   private _getState: GetState<State>;
@@ -36,10 +36,10 @@ export class StoreBuilder<State> {
     });
   }
 
-  reduceAsync<Data>(action: ActionDispatcher<Data>, reducer: AsyncReducer<State, Data>) {
+  asyncReduce<Data>(action: ActionDispatcher<Data>, reducer: AsyncReducer<State, Data>) {
     action.bind((data) => {
       const update = new StoreUpdate(this._getState, this._setState);
-      const returned = reducer(data, update);
+      const returned = reducer(update);
 
       // Async reducers can return interim states that take effect prior to done() being called. If
       // done has yet to be called, and there was an interim state returned, set the current state
