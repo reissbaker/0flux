@@ -8,6 +8,15 @@ var ActionDispatcher = (function () {
         this._callbacks.push(c);
         return c;
     };
+    ActionDispatcher.prototype.unbind = function (c) {
+        for (var i = 0; i < this._callbacks.length; i++) {
+            if (this._callbacks[i] === c) {
+                this._callbacks.splice(i, 1);
+                return true;
+            }
+        }
+        return false;
+    };
     ActionDispatcher.prototype.dispatch = function (d) {
         this._app.snapshot();
         for (var i = 0; i < this._callbacks.length; i++) {

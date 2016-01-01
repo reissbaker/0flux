@@ -17,6 +17,16 @@ class ActionDispatcher<Data> {
     return c;
   }
 
+  unbind(c: Callback<Data>): boolean {
+    for(let i = 0; i < this._callbacks.length; i++) {
+      if(this._callbacks[i] === c) {
+        this._callbacks.splice(i, 1);
+        return true;
+      }
+    }
+    return false;
+  }
+
   dispatch(d: Data): Data {
     this._app.snapshot();
 

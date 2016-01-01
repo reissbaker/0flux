@@ -6,6 +6,7 @@ declare class ActionDispatcher<Data> {
     private _app;
     constructor(app: App);
     bind(c: Callback<Data>): Callback<Data>;
+    unbind(c: Callback<Data>): boolean;
     dispatch(d: Data): Data;
 }
 export = ActionDispatcher;
